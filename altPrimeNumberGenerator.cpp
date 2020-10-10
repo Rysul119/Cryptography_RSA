@@ -48,10 +48,10 @@ cpp_int gcd(cpp_int a,  cpp_int b){
 }
 
 cpp_int power(cpp_int x, cpp_int n) {
-    if (n == 3)
-        return x*x*x;
-    if (n == 2)
-        return x*x; 
+    if (n == 1)
+        return x;
+    if (n == 0)
+        return 1; 
     if (n%2)
         return x*power(x, (n-1)/2) * power(x, (n-1)/2);
     else
