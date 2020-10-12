@@ -167,8 +167,10 @@ cpp_int inverse(cpp_int a, cpp_int m)
 { 
 	cpp_int x, y, modinverse; 
 	cpp_int g = extendedEuclid(a, m, &x, &y); 
-	if (g != 1) 
-		cout << "Inverse doesn't exist"; 
+	if (g != 1){
+		cout << "Inverse doesn't exist";
+		return 0; 
+	}
 	else
 	{ 
 		// m is added to handle negative x 
