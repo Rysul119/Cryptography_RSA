@@ -1,14 +1,16 @@
 //GCD function
 
 #include <iostream>
+#include <boost/multiprecision/cpp_int.hpp>
 
 using namespace std;
+using namespace boost::multiprecision;
 
-int gcd(int a, int b);
+cpp_int gcd(cpp_int a, cpp_int b);
 
 int main()
 {
-    int a, b, result;
+    cpp_int a, b, result;
     
     cout<<"Enter the first number: ";
     cin>> a;
@@ -18,18 +20,20 @@ int main()
     
     result = gcd(a, b);
     
-    cout<<"The resultant GCD is "<<result;
+    cout<<"The resultant GCD is "<<result<<endl;
+
+    return 0;
 }
 
-int gcd(int a, int b){
+cpp_int gcd(cpp_int a, cpp_int b){
     if (a==0){
         return b;
     }
-    if(b==0){
+    else if(b==0){
         return a;
     }
     
-    if(a>b){
+    else if(a>b){
         return gcd(b, a%b); //a%b returns remainder r where a = b*q + r
     }
     
