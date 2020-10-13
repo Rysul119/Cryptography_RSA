@@ -11,16 +11,16 @@ using namespace boost::multiprecision;
 
 class RSA {
     public:
-        cpp_int message;
         int keybit; //for generating a key
         int pqbit; // for generating two large prime numbers
+        cpp_int n, pkey;
         RSA(int x, int y);
-        cpp_int keygen();
-        cpp_int keycalc();
-        void encryption(cpp_int plaintext); //ecryption method
-        void decryption(cpp_int ciphertext, cpp_int pq, cpp_int publickey); //decryption method
+        cpp_int keygen(); //for generating a private key
+        cpp_int keycalc(); //for calculating the public key
+        cpp_int encryption(cpp_int plaintext); //ecryption method
+        cpp_int decryption(cpp_int ciphertext, cpp_int pq, cpp_int publickey); //decryption method
     private:
-        cpp_int n, p, q, phi, skey, pkey;
+        cpp_int p, q, phi, skey;
         int iter = 10; // for the primality testing of generate large prime numbers
         cpp_int gcd(cpp_int a, cpp_int b);
         cpp_int power(cpp_int x, cpp_int n);
@@ -180,12 +180,13 @@ cpp_int RSA::keygen( )
 cpp_int RSA::keycalc()
 {
     p = primerGenerator(iter, pqbit);
-    cout<<"Value of p: "<<p<<endl;
+    //cout<<"Value of p: "<<p<<endl;
 
     q = primerGenerator(iter, pqbit);
-    cout<<"Value of q: "<<q<<endl;
+    //cout<<"Value of q: "<<q<<endl;
 
     n = p * q;
+    //cout<<"Value of pq: "<<n<<endl;
     //calculating the Euler function phi(n) for the given p and q where n = p*q
     phi = (p-1) * (q-1);
 
@@ -194,18 +195,18 @@ cpp_int RSA::keycalc()
     return pkey;
 }
 
-void RSA::encryption(cpp_int plaintext)
+cpp_int RSA::encryption(cpp_int plaintext)
 {
     cpp_int enc;
     enc = power(plaintext, skey)%n;
-    cout<<"Encrypted message: "<<enc<<endl;
+    return enc;
 }
 
-void RSA::decryption(cpp_int ciphertext, cpp_int pq, cpp_int publickey)
+cpp_int RSA::decryption(cpp_int ciphertext, cpp_int pq, cpp_int publickey)
 {
     cpp_int dec;
     dec = power(ciphertext, pkey)%pq;
-    cout<<"Decrypted message: "<<dec<<endl;
+    return dec;
 }
 
 //A simple function to handle an error
@@ -218,13 +219,42 @@ void RSA::error()
 
 int main()
 {
-    //Create an RSA object
-    //Ask for the bit size of private key
-    //Generate the key
-    //Ask for the bit size of the 2 randomly generated number
-    //Calculate the public key
-    //Ask for the plaintext
-    //Do encryption
-    //Do decryption, check by using the same ciphertext, n and public key from above
-}
+    int kbit, nbit;
+    cpp_int privatekey, publickey, plaintext, ciphertext, dec;
+    srand(time(0));
 
+    //Ask for the bit size of private key
+    cout<<"Insert bit size for the key: ";
+    cin>>kbit;
+
+    //Ask for the bit size of the 2 randomly generated number
+    cout<<"Insert bit size for the random prime numbers: ";
+    cin>>nbit;
+
+    //Create an RSA object
+    RSA rsaObj(kbit, nbit);
+
+    //Generate the key
+    privatekey = rsaObj.keygen();
+    cout<<"Generated private key: "<<privatekey<<endl;
+    
+  
+    //Calculate the public key
+    publickey = rsaObj.keycalc();
+    cout<<"Generated public key: "<<publickey<<endl;
+    cout<<"Generated product of two prime numbers: "<<rsaObj.n<<endl;
+
+    //Ask for the plaintext
+    cout<<"Insert your message: ";
+    cin>>plaintext;
+
+    //Do encryption
+    ciphertext = rsaObj.encryption(plaintext);
+    cout<<"Encrypted message: "<<ciphertext<<endl;
+
+    //Do decryption, to check by using the same ciphertext, n and public key from above
+    dec = rsaObj.decryption(ciphertext, rsaObj.n, publickey);
+    cout<<"Decrypted message: "<<dec<<endl;
+
+    return 0;
+}
